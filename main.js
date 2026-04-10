@@ -1,58 +1,59 @@
 /**
  * NEON MAZE: INVERSION
- * Stage-based progression with conditional vertical inversion.
+ * Fixed: Seamless transition logic and centered starts.
  */
 
 const LEVELS = [
     {
         id: 1,
-        name: "STAGED 01: ORIENTATION",
+        name: "STAGE 01: ORIENTATION",
         isTutorial: true,
         walls: [
-            { x: 0, y: 0, w: 100, h: 5 }, { x: 0, y: 95, w: 100, h: 5 },
-            { x: 0, y: 5, w: 5, h: 90 }, { x: 95, y: 5, w: 5, h: 90 },
-            { x: 5, y: 40, w: 90, h: 20 }, // Path splits tutorial
+            { x: 0, y: 0, w: 100, h: 10 }, { x: 0, y: 90, w: 100, h: 10 },
+            { x: 0, y: 10, w: 5, h: 80 }, { x: 95, y: 10, w: 5, h: 80 },
+            { x: 20, y: 10, w: 5, h: 35 }, { x: 20, y: 55, w: 5, h: 35 },
+            { x: 40, y: 10, w: 5, h: 35 }, { x: 40, y: 55, w: 5, h: 35 },
+            { x: 60, y: 10, w: 5, h: 35 }, { x: 60, y: 55, w: 5, h: 35 },
         ],
-        start: { x: 10, y: 15, w: 10, h: 10 },
-        end: { x: 80, y: 70, w: 10, h: 15 },
+        start: { x: 7, y: 45, w: 10, h: 10 },
+        end: { x: 80, y: 45, w: 12, h: 12 },
         instructions: {
             initial: "MOVE TO THE [GREEN START ZONE]",
-            started: "⚠️ VERTICAL MOVEMENT INVERTED! REACH THE [PURPLE END PORTAL]"
+            started: "⚠️ VERTICAL INVERSION ACTIVE! REACH THE [PURPLE END PORTAL]"
         }
     },
     {
         id: 2,
-        name: "STAGED 02: THE WEAVE",
+        name: "STAGE 02: THE WEAVE",
         walls: [
             { x: 0, y: 0, w: 100, h: 5 }, { x: 0, y: 95, w: 100, h: 5 },
             { x: 0, y: 5, w: 5, h: 90 }, { x: 95, y: 5, w: 5, h: 90 },
             // Vertical Pillars
-            { x: 20, y: 5, w: 5, h: 60 }, { x: 20, y: 75, w: 5, h: 20 },
-            { x: 40, y: 5, w: 5, h: 20 }, { x: 40, y: 35, w: 5, h: 60 },
-            { x: 60, y: 5, w: 5, h: 60 }, { x: 60, y: 75, w: 5, h: 20 },
-            { x: 80, y: 5, w: 5, h: 20 }, { x: 80, y: 35, w: 5, h: 60 },
+            { x: 25, y: 5, w: 5, h: 40 }, { x: 25, y: 55, w: 5, h: 40 },
+            { x: 45, y: 5, w: 5, h: 40 }, { x: 45, y: 55, w: 5, h: 40 },
+            { x: 65, y: 5, w: 5, h: 40 }, { x: 65, y: 55, w: 5, h: 40 },
+            { x: 85, y: 5, w: 5, h: 40 }, { x: 85, y: 55, w: 5, h: 40 },
         ],
-        start: { x: 7, y: 7, w: 8, h: 8 },
-        end: { x: 87, y: 7, w: 8, h: 8 }
+        start: { x: 10, y: 45, w: 8, h: 10 },
+        end: { x: 75, y: 45, w: 8, h: 10 }
     },
     {
         id: 3,
-        name: "STAGED 03: THE MATRIX",
+        name: "STAGE 03: THE MATRIX",
         walls: [
             { x: 0, y: 0, w: 100, h: 5 }, { x: 0, y: 95, w: 100, h: 5 },
             { x: 0, y: 5, w: 5, h: 90 }, { x: 95, y: 5, w: 5, h: 90 },
-            // Dense Grid
-            { x: 15, y: 15, w: 20, h: 5 }, { x: 45, y: 15, w: 40, h: 5 },
-            { x: 15, y: 30, w: 40, h: 5 }, { x: 65, y: 30, w: 20, h: 5 },
-            { x: 15, y: 45, w: 20, h: 5 }, { x: 45, y: 45, w: 40, h: 5 },
-            { x: 15, y: 60, w: 40, h: 5 }, { x: 65, y: 60, w: 20, h: 5 },
-            { x: 15, y: 75, w: 20, h: 5 }, { x: 45, y: 75, w: 40, h: 5 },
-            // Thin vertical blocks
-            { x: 35, y: 20, w: 5, h: 10 }, { x: 55, y: 35, w: 5, h: 10 },
-            { x: 35, y: 50, w: 5, h: 10 }, { x: 55, y: 65, w: 5, h: 10 },
+            // Dense horizontal blocks with center opening
+            { x: 20, y: 5, w: 10, h: 40 }, { x: 20, y: 55, w: 10, h: 40 },
+            { x: 40, y: 5, w: 10, h: 30 }, { x: 40, y: 65, w: 10, h: 30 },
+            { x: 60, y: 5, w: 10, h: 40 }, { x: 60, y: 55, w: 10, h: 40 },
+            { x: 80, y: 5, w: 10, h: 30 }, { x: 80, y: 65, w: 10, h: 30 },
+            // Thin horizontal strips
+            { x: 30, y: 40, w: 10, h: 2 }, { x: 50, y: 58, w: 10, h: 2 },
+            { x: 70, y: 40, w: 10, h: 2 },
         ],
-        start: { x: 45, y: 7, w: 10, h: 7 },
-        end: { x: 45, y: 85, w: 10, h: 7 }
+        start: { x: 7, y: 46, w: 8, h: 8 },
+        end: { x: 90, y: 46, w: 5, h: 8 }
     }
 ];
 
@@ -65,8 +66,8 @@ class Game {
         this.isPlaying = false;
         this.hasStartedLevel = false;
         this.isMouseInStart = false;
+        this.inversionOffset = 0; // Added for seamless transition
 
-        // DOM Elements
         this.mazeRenderer = document.getElementById('maze-renderer');
         this.overlay = document.getElementById('overlay');
         this.overlayView = document.getElementById('overlay-view');
@@ -92,7 +93,6 @@ class Game {
         container.addEventListener('mousemove', (e) => this.handleMouseMove(e));
 
         this.renderLevel();
-        // Initial Intro View
         this.showIntro();
     }
 
@@ -104,21 +104,21 @@ class Game {
         let finalX = nativeX;
         let finalY = nativeY;
 
-        // CONDITIONAL INVERSION LOGIC
-        // Only invert Y if the level has actually started (cursor touched Start)
+        // SEAMLESS INVERSION LOGIC
         if (this.hasStartedLevel) {
-            finalY = rect.height - nativeY;
+            // Apply inversion + offset to prevent jumping
+            finalY = (rect.height - nativeY) + this.inversionOffset;
         }
 
-        // Update fake cursor
+        // Update fake cursor visual
         this.fakeCursor.style.left = `${finalX}px`;
         this.fakeCursor.style.top = `${finalY}px`;
 
-        // Check collisions based on fake cursor screen position
-        this.checkCollisions(rect.left + finalX, rect.top + finalY);
+        // Check collisions based on fake cursor position
+        this.checkCollisions(rect.left + finalX, rect.top + finalY, nativeY, rect.height);
     }
 
-    checkCollisions(screenX, screenY) {
+    checkCollisions(screenX, screenY, nativeY, containerHeight) {
         if (!this.isPlaying) return;
 
         const el = document.elementFromPoint(screenX, screenY);
@@ -128,7 +128,7 @@ class Game {
         if (el.classList.contains('start-zone')) {
             this.isMouseInStart = true;
             if (!this.hasStartedLevel) {
-                this.beginSession();
+                this.beginSession(nativeY, containerHeight);
             }
         } else {
             this.isMouseInStart = false;
@@ -152,13 +152,12 @@ class Game {
         this.gameWarning.classList.add('hidden');
         this.isPlaying = false;
         
-        // Ensure intro content is visible
         this.overlayView.innerHTML = `
             <div class="logo">
                 <span class="logo-main">NEON MAZE</span>
                 <span class="logo-sub">INVERSION</span>
             </div>
-            <p>Vertical controls will reverse upon entry.</p>
+            <p>A seamless test of neural sync.</p>
             <div class="controls-hint">
                 <div class="key">SPACE</div>
                 <span>TO BEGIN</span>
@@ -221,6 +220,7 @@ class Game {
         this.fakeCursor.classList.remove('hidden');
         this.isPlaying = true;
         this.hasStartedLevel = false;
+        this.inversionOffset = 0; // Reset offset for new attempt
         
         const level = LEVELS[this.currentLevelIndex];
         if (level.isTutorial) {
@@ -229,16 +229,20 @@ class Game {
             this.tutorialText.classList.add('hidden');
         }
 
-        // Show start warning if not already in start zone
         if (!this.isMouseInStart) {
             this.gameWarning.classList.remove('hidden');
         }
     }
 
-    beginSession() {
+    beginSession(nativeY, containerHeight) {
         this.hasStartedLevel = true;
         this.gameWarning.classList.add('hidden');
         
+        // Calculate the offset needed to keep the cursor exactly where it is
+        // formula: OriginalY = (Height - OriginalY) + Offset
+        // Offset = 2 * OriginalY - Height
+        this.inversionOffset = (2 * nativeY) - containerHeight;
+
         const level = LEVELS[this.currentLevelIndex];
         if (level.isTutorial) {
             this.updateTutorial(level.instructions.started);
@@ -260,7 +264,7 @@ class Game {
         
         wallEl.classList.add('hit');
         setTimeout(() => {
-            this.showStatus('CRASHED!', 'Your neural link failed. Try again.');
+            this.showStatus('CRASHED!', 'Focus. Coordination is key.');
         }, 500);
     }
 
@@ -270,10 +274,10 @@ class Game {
         
         if (this.currentLevelIndex < LEVELS.length - 1) {
             this.currentLevelIndex++;
-            this.showStatus('STAGE CLEAR!', `Connection stabilized in ${this.timer.toFixed(1)}s`);
+            this.showStatus('STAGE CLEAR!', `Neural sync held for ${this.timer.toFixed(1)}s`);
             this.renderLevel();
         } else {
-            this.showStatus('LEGENDARY!', `Simulation conquered with ${this.deaths} failures.`);
+            this.showStatus('LEGENDARY!', `Simulation conquered with ${this.deaths} deaths.`);
             this.currentLevelIndex = 0;
             this.deaths = 0;
             this.deathsDisplay.textContent = '0';
