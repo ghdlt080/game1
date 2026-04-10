@@ -1,55 +1,50 @@
 /**
- * NEON MAZE - Game Logic
+ * NEON MAZE - Game Logic (Extreme Inversion Edition)
  */
 
 const LEVELS = [
     {
         id: 1,
         walls: [
-            { x: 0, y: 0, w: 100, h: 20 },    // Top border
-            { x: 0, y: 80, w: 100, h: 20 },   // Bottom border
-            { x: 0, y: 20, w: 5, h: 60 },     // Left border
-            { x: 95, y: 20, w: 5, h: 60 },    // Right border
-            { x: 20, y: 20, w: 10, h: 40 },   // Block 1
-            { x: 50, y: 40, w: 10, h: 40 },   // Block 2
-            { x: 70, y: 20, w: 10, h: 40 },   // Block 3
+            { x: 0, y: 0, w: 100, h: 5 }, { x: 0, y: 95, w: 100, h: 5 },
+            { x: 0, y: 5, w: 5, h: 90 }, { x: 95, y: 5, w: 5, h: 90 },
+            { x: 5, y: 20, w: 70, h: 5 }, { x: 25, y: 40, w: 70, h: 5 },
+            { x: 5, y: 60, w: 70, h: 5 }, { x: 25, y: 80, w: 70, h: 5 },
         ],
-        start: { x: 5, y: 25, w: 10, h: 10 },
-        end: { x: 85, y: 65, w: 10, h: 10 }
+        start: { x: 10, y: 10, w: 10, h: 10 },
+        end: { x: 80, y: 85, w: 10, h: 10 }
     },
     {
         id: 2,
         walls: [
-            { x: 0, y: 0, w: 100, h: 5 },     // Top border
-            { x: 0, y: 95, w: 100, h: 5 },    // Bottom border
-            { x: 0, y: 5, w: 5, h: 90 },     // Left border
-            { x: 95, y: 5, w: 5, h: 90 },    // Right border
-            { x: 20, y: 20, w: 60, h: 5 },
-            { x: 20, y: 25, w: 5, h: 50 },
-            { x: 25, y: 70, w: 50, h: 5 },
-            { x: 75, y: 40, w: 5, h: 35 },
-            { x: 40, y: 40, w: 40, h: 5 },
+            { x: 0, y: 0, w: 100, h: 5 }, { x: 0, y: 95, w: 100, h: 5 },
+            { x: 0, y: 5, w: 5, h: 90 }, { x: 95, y: 5, w: 5, h: 90 },
+            // Grid obstacles
+            { x: 20, y: 20, w: 15, h: 15 }, { x: 45, y: 20, w: 15, h: 15 }, { x: 70, y: 20, w: 15, h: 15 },
+            { x: 20, y: 45, w: 15, h: 15 }, { x: 45, y: 45, w: 15, h: 15 }, { x: 70, y: 45, w: 15, h: 15 },
+            { x: 20, y: 70, w: 15, h: 15 }, { x: 45, y: 70, w: 15, h: 15 }, { x: 70, y: 70, w: 15, h: 15 },
+            // Extra thin walls
+            { x: 35, y: 5, w: 2, h: 40 }, { x: 60, y: 55, w: 2, h: 40 }
         ],
         start: { x: 5, y: 5, w: 10, h: 10 },
-        end: { x: 50, y: 50, w: 10, h: 10 }
+        end: { x: 85, y: 85, w: 10, h: 10 }
     },
     {
         id: 3,
         walls: [
-            { x: 0, y: 0, w: 100, h: 5 },
-            { x: 0, y: 95, w: 100, h: 5 },
-            { x: 0, y: 5, w: 5, h: 90 },
-            { x: 95, y: 5, w: 5, h: 90 },
-            { x: 20, y: 5, w: 5, h: 40 },
-            { x: 20, y: 55, w: 5, h: 40 },
-            { x: 40, y: 20, w: 5, h: 40 },
-            { x: 40, y: 70, w: 5, h: 25 },
-            { x: 60, y: 5, w: 5, h: 25 },
-            { x: 60, y: 40, w: 5, h: 55 },
-            { x: 80, y: 20, w: 5, h: 55 },
+            { x: 0, y: 0, w: 100, h: 5 }, { x: 0, y: 95, w: 100, h: 5 },
+            { x: 0, y: 5, w: 5, h: 90 }, { x: 95, y: 5, w: 5, h: 90 },
+            // The Maze
+            { x: 15, y: 5, w: 5, h: 30 }, { x: 15, y: 45, w: 5, h: 50 },
+            { x: 30, y: 15, w: 5, h: 70 }, { x: 45, y: 5, w: 5, h: 40 },
+            { x: 45, y: 55, w: 5, h: 40 }, { x: 60, y: 15, w: 5, h: 70 },
+            { x: 75, y: 5, w: 5, h: 30 }, { x: 75, y: 45, w: 5, h: 50 },
+            // Horizontal caps
+            { x: 20, y: 15, w: 10, h: 5 }, { x: 35, y: 35, w: 10, h: 5 },
+            { x: 50, y: 55, w: 10, h: 5 }, { x: 65, y: 75, w: 10, h: 5 }
         ],
-        start: { x: 5, y: 45, w: 10, h: 10 },
-        end: { x: 85, y: 45, w: 10, h: 10 }
+        start: { x: 5, y: 85, w: 10, h: 10 },
+        end: { x: 85, y: 5, w: 10, h: 10 }
     }
 ];
 
@@ -58,50 +53,87 @@ class Game {
         this.currentLevelIndex = 0;
         this.deaths = 0;
         this.timer = 0;
-        this.timerInterval = null;
         this.isPlaying = false;
         this.hasStartedLevel = false;
+
+        this.fakeCursorPos = { x: 50, y: 50 };
         this.isMouseInStart = false;
 
         this.mazeRenderer = document.getElementById('maze-renderer');
         this.overlay = document.getElementById('overlay');
         this.overlayTitle = document.getElementById('overlay-title');
         this.overlayMessage = document.getElementById('overlay-message');
+        this.gameWarning = document.getElementById('game-warning');
+        this.fakeCursor = document.getElementById('fake-cursor');
+        
         this.levelDisplay = document.getElementById('current-level');
         this.timerDisplay = document.getElementById('timer');
         this.deathsDisplay = document.getElementById('deaths');
-        this.gameWarning = document.getElementById('game-warning');
 
         this.init();
     }
 
     init() {
+        // Space to start
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && !this.overlay.classList.contains('hidden')) {
                 this.startLevel();
             }
         });
 
-        this.mazeRenderer.addEventListener('mouseleave', () => {
-            if (this.isPlaying && this.hasStartedLevel) {
-                this.handleCollision(null);
-            }
-        });
+        // Mouse Move logic
+        const container = document.getElementById('game-container');
+        container.addEventListener('mousemove', (e) => this.updateCursor(e));
+
         this.renderLevel();
-        this.showOverlay('NEON MAZE', 'Avoid the walls. Reach the portal.');
+        this.showOverlay('INVERTED NEON MAZE', 'Vertical controls are reversed.\nPress SPACE to begin.');
     }
 
-    showOverlay(title, message) {
-        this.overlayTitle.textContent = title;
-        this.overlayMessage.textContent = message;
-        this.gameWarning.classList.add('hidden'); // Ensure no stray warnings
-        this.overlay.classList.remove('hidden');
-        this.isPlaying = false;
+    updateCursor(e) {
+        const rect = document.getElementById('game-container').getBoundingClientRect();
+        
+        // Native relative coords
+        const nativeX = e.clientX - rect.left;
+        const nativeY = e.clientY - rect.top;
+
+        // INVERSION LOGIC: Y is flipped
+        const invertedY = rect.height - nativeY;
+        
+        // Update fake cursor visual
+        this.fakeCursor.style.left = `${nativeX}px`;
+        this.fakeCursor.style.top = `${invertedY}px`;
+        
+        // Store for logic
+        this.fakeCursorPos = { x: nativeX, y: invertedY };
+
+        // COLLISION DETECTION using document.elementFromPoint
+        // We use the coordinates of the FAKE cursor
+        this.checkCollisions(e.clientX, rect.top + invertedY);
     }
 
-    hideOverlay() {
-        this.overlay.classList.add('hidden');
-        this.isPlaying = true;
+    checkCollisions(screenX, screenY) {
+        if (!this.isPlaying) return;
+
+        const el = document.elementFromPoint(screenX, screenY);
+        if (!el) return;
+
+        // Check if cursor is in start zone
+        if (el.classList.contains('start-zone')) {
+            this.isMouseInStart = true;
+            if (!this.hasStartedLevel) this.beginMovement();
+        } else {
+            this.isMouseInStart = false;
+        }
+
+        // Check for wall hits
+        if (this.hasStartedLevel && el.classList.contains('maze-wall')) {
+            this.handleCollision(el);
+        }
+
+        // Check for victory
+        if (this.hasStartedLevel && el.classList.contains('end-zone')) {
+            this.completeLevel();
+        }
     }
 
     renderLevel() {
@@ -116,7 +148,6 @@ class Game {
             el.style.top = `${wall.y}%`;
             el.style.width = `${wall.w}%`;
             el.style.height = `${wall.h}%`;
-            el.addEventListener('mouseenter', () => this.handleCollision(el));
             this.mazeRenderer.appendChild(el);
         });
 
@@ -127,15 +158,6 @@ class Game {
         start.style.top = `${level.start.y}%`;
         start.style.width = `${level.start.w}%`;
         start.style.height = `${level.start.h}%`;
-        
-        start.addEventListener('mouseenter', () => {
-            this.isMouseInStart = true;
-            this.beginMovement();
-        });
-        start.addEventListener('mouseleave', () => {
-            this.isMouseInStart = false;
-        });
-        
         this.mazeRenderer.appendChild(start);
 
         const end = document.createElement('div');
@@ -145,60 +167,65 @@ class Game {
         end.style.top = `${level.end.y}%`;
         end.style.width = `${level.end.w}%`;
         end.style.height = `${level.end.h}%`;
-        end.addEventListener('mouseenter', () => this.completeLevel());
         this.mazeRenderer.appendChild(end);
+    }
+
+    showOverlay(title, message) {
+        this.overlayTitle.textContent = title;
+        this.overlayMessage.textContent = message;
+        this.overlay.classList.remove('hidden');
+        this.fakeCursor.classList.add('hidden');
+        this.gameWarning.classList.add('hidden');
+        this.isPlaying = false;
+    }
+
+    hideOverlay() {
+        this.overlay.classList.add('hidden');
+        this.fakeCursor.classList.remove('hidden');
+        this.isPlaying = true;
     }
 
     startLevel() {
         this.hideOverlay();
         this.hasStartedLevel = false;
-        this.resetTimer();
+        this.timer = 0;
+        this.timerDisplay.textContent = '0.0';
         
-        // After Space, if they aren't on start, show bottom warning
+        // Initial check for start zone
         if (!this.isMouseInStart) {
             this.gameWarning.classList.remove('hidden');
         }
     }
 
     beginMovement() {
-        if (!this.isPlaying || this.hasStartedLevel) return;
+        if (this.hasStartedLevel) return;
         this.hasStartedLevel = true;
-        this.gameWarning.classList.add('hidden'); // Hide warning once started
+        this.gameWarning.classList.add('hidden');
         this.startTimer();
     }
 
     handleCollision(wallEl) {
-        if (!this.isPlaying || !this.hasStartedLevel) return;
-        
         this.deaths++;
         this.deathsDisplay.textContent = this.deaths;
         this.stopTimer();
-        this.gameWarning.classList.add('hidden');
-        
-        if (wallEl && wallEl.classList) {
-            wallEl.classList.add('hit');
-            setTimeout(() => wallEl.classList.remove('hit'), 500);
-        }
-        
         this.isPlaying = false;
+        
+        wallEl.classList.add('hit');
         setTimeout(() => {
-            this.showOverlay('CRASHED!', 'Stay within the neon path.');
+            this.showOverlay('CRASHED!', 'Focus. Inversion is active.');
         }, 500);
     }
 
     completeLevel() {
-        if (!this.isPlaying || !this.hasStartedLevel) return;
-        
         this.stopTimer();
         this.isPlaying = false;
-        this.gameWarning.classList.add('hidden');
         
         if (this.currentLevelIndex < LEVELS.length - 1) {
             this.currentLevelIndex++;
             this.showOverlay('LEVEL CLEAR!', `Time: ${this.timer.toFixed(1)}s`);
             this.renderLevel();
         } else {
-            this.showOverlay('VICTORY!', `Total Deaths: ${this.deaths}`);
+            this.showOverlay('LEGENDARY!', `Finished with ${this.deaths} deaths.`);
             this.currentLevelIndex = 0;
             this.deaths = 0;
             this.deathsDisplay.textContent = '0';
@@ -207,7 +234,7 @@ class Game {
     }
 
     startTimer() {
-        this.resetTimer();
+        clearInterval(this.timerInterval);
         this.timerInterval = setInterval(() => {
             this.timer += 0.1;
             this.timerDisplay.textContent = this.timer.toFixed(1);
@@ -216,12 +243,6 @@ class Game {
 
     stopTimer() {
         clearInterval(this.timerInterval);
-    }
-
-    resetTimer() {
-        this.stopTimer();
-        this.timer = 0;
-        this.timerDisplay.textContent = '0.0';
     }
 }
 
