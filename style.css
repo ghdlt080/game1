@@ -2,6 +2,7 @@
 
 @layer base {
     :root {
+        /* Default Theme (Cyan) */
         --bg-color: oklch(10% 0.02 260);
         --accent-color: oklch(75% 0.25 190);
         --start-color: oklch(80% 0.3 150);
@@ -10,6 +11,26 @@
         --text-color: oklch(98% 0.01 260);
         --danger-color: oklch(60% 0.25 30);
         --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Theme Overrides */
+    body.theme-inferno {
+        --accent-color: oklch(70% 0.3 30);
+        --start-color: oklch(85% 0.2 60);
+        --end-color: oklch(60% 0.3 330);
+        --wall-color: oklch(25% 0.1 30);
+    }
+    body.theme-toxic {
+        --accent-color: oklch(80% 0.3 140);
+        --start-color: oklch(90% 0.2 180);
+        --end-color: oklch(60% 0.3 100);
+        --wall-color: oklch(25% 0.1 140);
+    }
+    body.theme-matrix {
+        --accent-color: oklch(90% 0 0);
+        --start-color: oklch(80% 0 0);
+        --end-color: oklch(50% 0 0);
+        --wall-color: oklch(30% 0 0);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -23,31 +44,44 @@
         align-items: center;
         height: 100vh;
         width: 100vw;
+        transition: background-color 0.5s;
     }
 }
 
 @layer components {
     #app {
         width: 100%;
-        max-width: 1000px;
+        max-width: 1100px;
         height: 95vh;
         display: grid;
         grid-template-rows: auto 1fr auto;
         gap: 1rem;
-        padding: 1rem;
+        padding: 1.5rem;
     }
 
     .game-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0.5rem 1rem;
-        background: oklch(100% 0 0 / 0.05);
-        border-radius: 0.5rem;
+        padding: 1rem 1.5rem;
+        background: oklch(100% 0 0 / 0.03);
+        border-radius: 1rem;
+        border: 1px solid oklch(100% 0 0 / 0.05);
     }
+    
+    .header-left { display: flex; align-items: center; gap: 1.5rem; }
+    .icon-btn {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        opacity: 0.5;
+        transition: opacity 0.2s, transform 0.2s;
+    }
+    .icon-btn:hover { opacity: 1; transform: rotate(45deg); }
 
     .logo-main {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
         font-weight: 900;
         letter-spacing: 0.2em;
         background: linear-gradient(45deg, var(--accent-color), var(--end-color));
@@ -55,163 +89,76 @@
         -webkit-text-fill-color: transparent;
     }
 
-    .stats { display: flex; gap: 1.5rem; }
-    .stat-item { font-size: 0.7rem; font-weight: 800; color: oklch(100% 0 0 / 0.4); text-transform: uppercase; }
-    .stat-item span { color: var(--text-color); margin-left: 0.3rem; }
+    .stats { display: flex; gap: 2rem; }
+    .stat-item { font-size: 0.8rem; font-weight: 800; color: oklch(100% 0 0 / 0.4); text-transform: uppercase; }
+    .stat-item span { color: var(--text-color); margin-left: 0.5rem; font-family: monospace; }
 
     #game-container {
         position: relative;
         background: oklch(100% 0 0 / 0.01);
-        border: 2px solid oklch(100% 0 0 / 0.1);
-        border-radius: 1.5rem;
+        border: 2px solid oklch(100% 0 0 / 0.08);
+        border-radius: 2rem;
         overflow: hidden;
         cursor: none;
-        box-shadow: 0 0 100px oklch(0% 0 0 / 0.8) inset;
+        box-shadow: 0 0 150px oklch(0% 0 0 / 0.9) inset;
     }
 
     #maze-renderer { width: 100%; height: 100%; position: relative; }
 
-    /* CUSTOM CURSOR */
+    /* CURSOR SHAPES */
     .fake-cursor {
         position: absolute;
-        width: 10px;
-        height: 10px;
-        background: white;
-        border-radius: 50%;
-        box-shadow: 0 0 15px white, 0 0 30px var(--accent-color);
         pointer-events: none;
-        z-index: 200;
+        z-index: 500;
         transform: translate(-50%, -50%);
-        transition: transform 0.02s linear;
     }
+    .fake-cursor.shape-dot { width: 12px; height: 12px; background: white; border-radius: 50%; box-shadow: 0 0 20px var(--accent-color); }
+    .fake-cursor.shape-square { width: 14px; height: 14px; background: white; border: 2px solid var(--accent-color); }
+    .fake-cursor.shape-cross { width: 20px; height: 20px; border-left: 2px solid var(--accent-color); border-top: 2px solid var(--accent-color); transform: translate(-50%, -50%) rotate(45deg); }
     .fake-cursor.hidden { display: none; }
 
     /* Maze Walls */
     .maze-wall {
         position: absolute;
         background-color: var(--wall-color);
-        box-shadow: inset 0 0 15px oklch(0% 0 0 / 0.5);
+        box-shadow: inset 0 0 20px oklch(0% 0 0 / 0.4);
         border: 1px solid oklch(100% 0 0 / 0.05);
+        transition: background-color 0.3s;
     }
-    .maze-wall.hit {
-        background-color: var(--danger-color);
-        box-shadow: 0 0 40px var(--danger-color);
-        z-index: 10;
-    }
+    .maze-wall.hit { background-color: var(--danger-color); box-shadow: 0 0 50px var(--danger-color); z-index: 10; }
 
-    .zone {
-        position: absolute;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-weight: 900;
-        font-size: 0.7rem;
-        border-radius: 8px;
-        text-transform: uppercase;
-        border: 2px solid transparent;
-    }
-    .start-zone {
-        background: oklch(80% 0.3 150 / 0.1);
-        color: var(--start-color);
-        border-color: var(--start-color);
-        box-shadow: 0 0 20px oklch(80% 0.3 150 / 0.2);
-    }
-    .end-zone {
-        background: oklch(65% 0.35 320 / 0.1);
-        color: var(--end-color);
-        border-color: var(--end-color);
-        animation: pulse 1.5s infinite alternate;
-    }
+    .zone { position: absolute; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 0.7rem; border-radius: 8px; text-transform: uppercase; border: 2px solid transparent; }
+    .start-zone { background: oklch(80% 0.3 150 / 0.1); color: var(--start-color); border-color: var(--start-color); }
+    .end-zone { background: oklch(65% 0.35 320 / 0.1); color: var(--end-color); border-color: var(--end-color); animation: pulse 1.5s infinite alternate; }
 
-    @keyframes pulse {
-        0% { box-shadow: 0 0 5px var(--end-color); transform: scale(1); }
-        100% { box-shadow: 0 0 30px var(--end-color); transform: scale(1.05); }
-    }
+    @keyframes pulse { 0% { box-shadow: 0 0 10px var(--end-color); transform: scale(1); } 100% { box-shadow: 0 0 40px var(--end-color); transform: scale(1.05); } }
 
-    /* Overlay / Menu */
-    .overlay {
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at center, oklch(15% 0.02 260 / 0.9), oklch(5% 0.02 260 / 0.98));
-        backdrop-filter: blur(20px);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 300;
-        cursor: auto;
-    }
+    /* OVERLAY SYSTEM */
+    .overlay { position: absolute; inset: 0; background: radial-gradient(circle at center, oklch(10% 0.02 260 / 0.95), oklch(5% 0.02 260 / 1)); backdrop-filter: blur(25px); display: flex; justify-content: center; align-items: center; z-index: 600; cursor: auto; }
     .overlay.hidden { display: none; }
 
-    .overlay-content {
-        text-align: center;
-        padding: 5rem;
-        background: oklch(100% 0 0 / 0.03);
-        border: 1px solid oklch(100% 0 0 / 0.1);
-        border-radius: 3rem;
-        max-width: 700px;
-        box-shadow: 0 50px 100px oklch(0% 0 0 / 0.8);
-    }
+    .overlay-content { text-align: center; padding: 4rem; background: oklch(100% 0 0 / 0.02); border: 1px solid oklch(100% 0 0 / 0.1); border-radius: 3rem; width: 90%; max-width: 800px; box-shadow: 0 100px 200px oklch(0% 0 0 / 0.9); position: relative; }
 
-    /* Logo Styling */
-    .logo { display: flex; flex-direction: column; margin-bottom: 2.5rem; }
-    .logo .logo-main { font-size: 4rem; letter-spacing: 0.4em; line-height: 1; margin-bottom: 0.5rem; }
-    .logo .logo-sub { font-size: 1.2rem; letter-spacing: 0.8em; color: var(--accent-color); font-weight: 300; }
+    /* UI ELEMENTS */
+    .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; text-align: left; margin-top: 2rem; }
+    .menu-section h3 { font-size: 0.9rem; letter-spacing: 0.2em; color: var(--accent-color); margin-bottom: 1rem; text-transform: uppercase; }
+    .option-group { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .choice-btn { padding: 0.6rem 1.2rem; background: oklch(100% 0 0 / 0.05); border: 1px solid oklch(100% 0 0 / 0.1); border-radius: 0.5rem; color: white; cursor: pointer; font-size: 0.8rem; transition: all 0.2s; }
+    .choice-btn.active { background: var(--accent-color); color: var(--bg-color); font-weight: 800; border-color: white; }
+    
+    .volume-slider { width: 100%; height: 6px; background: oklch(100% 0 0 / 0.1); border-radius: 10px; appearance: none; margin-top: 1rem; }
+    .volume-slider::-webkit-slider-thumb { appearance: none; width: 18px; height: 18px; background: var(--accent-color); border-radius: 50%; cursor: pointer; box-shadow: 0 0 10px var(--accent-color); }
 
-    /* Controls Hint */
-    .controls-hint {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
-        margin-top: 3rem;
-    }
-    .key {
-        padding: 0.8rem 2rem;
-        background: var(--text-color);
-        color: var(--bg-color);
-        font-weight: 900;
-        border-radius: 0.5rem;
-        box-shadow: 0 5px 0 oklch(100% 0 0 / 0.5);
-    }
+    /* Leaderboard */
+    .leaderboard-list { margin-top: 1.5rem; text-align: left; }
+    .leaderboard-item { display: grid; grid-template-columns: 40px 1fr auto; padding: 0.8rem 1rem; border-bottom: 1px solid oklch(100% 0 0 / 0.05); font-family: monospace; }
+    .leaderboard-item:first-child { color: var(--accent-color); font-weight: 800; border-top: 1px solid var(--accent-color); background: oklch(100% 0 0 / 0.02); }
 
-    /* Game Warning Bar */
-    .game-warning {
-        position: absolute;
-        bottom: 2rem;
-        left: 50%;
-        transform: translateX(-50%);
-        background: var(--danger-color);
-        color: white;
-        padding: 1rem 3rem;
-        border-radius: 4rem;
-        font-weight: 900;
-        font-size: 0.9rem;
-        letter-spacing: 0.1em;
-        z-index: 400;
-        box-shadow: 0 20px 40px oklch(0% 0 0 / 0.5);
-        animation: slideUp 0.3s ease-out;
-    }
-    @keyframes slideUp { from { transform: translate(-50%, 50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
-    .game-warning.hidden { display: none; }
+    .name-input { background: oklch(100% 0 0 / 0.05); border: 1px solid var(--accent-color); padding: 1rem; border-radius: 0.5rem; color: white; width: 100%; font-size: 1.2rem; text-align: center; margin: 2rem 0; outline: none; }
 
-    /* Tutorial Instruction Box */
-    .tutorial-text {
-        position: absolute;
-        top: 2rem;
-        left: 50%;
-        transform: translateX(-50%);
-        background: oklch(100% 0 0 / 0.08);
-        padding: 1.5rem 3rem;
-        border-radius: 1rem;
-        font-weight: 600;
-        font-size: 1.1rem;
-        color: var(--accent-color);
-        text-align: center;
-        backdrop-filter: blur(10px);
-        border: 1px solid oklch(100% 0 0 / 0.1);
-        z-index: 150;
-    }
-    .tutorial-text.hidden { display: none; }
+    .controls-hint { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-top: 2.5rem; }
+    .key { padding: 0.7rem 2rem; background: var(--text-color); color: var(--bg-color); font-weight: 900; border-radius: 0.5rem; box-shadow: 0 5px 0 oklch(100% 0 0 / 0.4); font-size: 0.9rem; }
 
-    .game-footer { text-align: center; color: oklch(100% 0 0 / 0.2); font-size: 0.8rem; margin-top: 1rem; }
+    .tutorial-text { position: absolute; top: 3rem; left: 50%; transform: translateX(-50%); background: oklch(100% 0 0 / 0.08); padding: 1.5rem 3rem; border-radius: 1rem; font-weight: 700; color: var(--accent-color); backdrop-filter: blur(10px); border: 1px solid oklch(100% 0 0 / 0.1); z-index: 150; animation: glow-text 2s infinite alternate; }
+    @keyframes glow-text { from { box-shadow: 0 0 5px var(--accent-color); } to { box-shadow: 0 0 20px var(--accent-color); } }
 }

@@ -12,7 +12,10 @@
 <body>
     <div id="app">
         <header class="game-header">
-            <h1>NEON MAZE</h1>
+            <div class="header-left">
+                <span class="logo-main">NEON MAZE</span>
+                <button id="settings-btn" class="icon-btn">⚙️</button>
+            </div>
             <div class="stats">
                 <div class="stat-item">LEVEL <span id="current-level">1</span></div>
                 <div class="stat-item">TIME <span id="timer">0.0</span>s</div>
@@ -33,16 +36,8 @@
             </div>
 
             <div id="overlay" class="overlay">
-                <div class="overlay-content intro-view" id="overlay-view">
-                    <div class="logo">
-                        <span class="logo-main">NEON MAZE</span>
-                        <span class="logo-sub">INVERSION</span>
-                    </div>
-                    <p id="overlay-message">A test of hand-eye coordination.</p>
-                    <div class="controls-hint">
-                        <div class="key">SPACE</div>
-                        <span>TO BEGIN</span>
-                    </div>
+                <div class="overlay-content" id="overlay-view">
+                    <!-- Dynamic views: Intro, Settings, Leaderboard, Victory -->
                 </div>
             </div>
         </main>
