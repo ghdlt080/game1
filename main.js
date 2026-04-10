@@ -24,7 +24,6 @@ const LEVELS = [
             { x: 0, y: 95, w: 100, h: 5 },    // Bottom border
             { x: 0, y: 5, w: 5, h: 90 },     // Left border
             { x: 95, y: 5, w: 5, h: 90 },    // Right border
-            // Spiral-like walls
             { x: 20, y: 20, w: 60, h: 5 },
             { x: 20, y: 25, w: 5, h: 50 },
             { x: 25, y: 70, w: 50, h: 5 },
@@ -41,7 +40,6 @@ const LEVELS = [
             { x: 0, y: 95, w: 100, h: 5 },
             { x: 0, y: 5, w: 5, h: 90 },
             { x: 95, y: 5, w: 5, h: 90 },
-            // Checkerboard obstacles
             { x: 20, y: 5, w: 5, h: 40 },
             { x: 20, y: 55, w: 5, h: 40 },
             { x: 40, y: 20, w: 5, h: 40 },
@@ -64,12 +62,10 @@ class Game {
         this.isPlaying = false;
         this.hasStartedLevel = false;
 
-        // DOM Elements
         this.mazeRenderer = document.getElementById('maze-renderer');
         this.overlay = document.getElementById('overlay');
         this.overlayTitle = document.getElementById('overlay-title');
         this.overlayMessage = document.getElementById('overlay-message');
-        this.startBtn = document.getElementById('start-btn');
         this.levelDisplay = document.getElementById('current-level');
         this.timerDisplay = document.getElementById('timer');
         this.deathsDisplay = document.getElementById('deaths');
@@ -78,71 +74,26 @@ class Game {
     }
 
     init() {
-        console.log("Game initialized");
-        this.startBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent trigger from global click
-            this.startLevel();
-        });
-        
-        // GLOBAL INPUT LISTENERS
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && !this.overlay.classList.contains('hidden')) {
-                this.startLevel();
-            }
-        });
-        
-        // Document click should also advance if overlay is visible
-        this.overlay.addEventListener('click', () => {
-            if (!this.overlay.classList.contains('hidden')) {
                 this.startLevel();
             }
         });
 
         this.mazeRenderer.addEventListener('mouseleave', () => {
             if (this.isPlaying && this.hasStartedLevel) {
-                console.log("Mouse left game area");
                 this.handleCollision(null);
             }
         });
         this.renderLevel();
-        this.showOverlay('NEON MAZE', 'Avoid the walls. Reach the portal.\n(Press SPACE or Click to start)');
+        this.showOverlay('NEON MAZE', 'Avoid the walls. Reach the portal.');
     }
 
-    showOverlay(title, message, btnText = 'START') {
+    showOverlay(title, message) {
         this.overlayTitle.textContent = title;
         this.overlayMessage.textContent = message;
-        this.startBtn.textContent = btnText;
-        
-        const content = document.querySelector('.overlay-content');
-        
-        // Standard full-screen layout
-        content.style.position = 'relative';
-        content.style.left = 'auto';
-        content.style.top = 'auto';
-        content.style.transform = 'none';
-        
-        // Show overlay
         this.overlay.classList.remove('hidden');
         this.isPlaying = false;
-        
-        // After showing content, position the start button specifically for alignment
-        // This makes the transition feel more deliberate.
-        if (btnText === 'START' || btnText === 'RETRY' || btnText === 'NEXT LEVEL') {
-            const level = LEVELS[this.currentLevelIndex];
-            this.startBtn.classList.add('aligned');
-            this.startBtn.style.left = `${level.start.x + level.start.w/2}%`;
-            this.startBtn.style.top = `${level.start.y + level.start.h/2}%`;
-            this.startBtn.style.transform = 'translate(-50%, -50%)';
-            // Move button into maze container for percentage alignment
-            this.mazeRenderer.appendChild(this.startBtn);
-        } else {
-            this.startBtn.classList.remove('aligned');
-            this.startBtn.style.position = 'relative';
-            this.startBtn.style.left = 'auto';
-            this.startBtn.style.top = 'auto';
-            this.startBtn.style.transform = 'none';
-            content.appendChild(this.startBtn);
-        }
     }
 
     hideOverlay() {
@@ -155,7 +106,6 @@ class Game {
         this.mazeRenderer.innerHTML = '';
         this.levelDisplay.textContent = level.id;
 
-        // Render Walls
         level.walls.forEach(wall => {
             const el = document.createElement('div');
             el.className = 'maze-wall';
@@ -163,12 +113,10 @@ class Game {
             el.style.top = `${wall.y}%`;
             el.style.width = `${wall.w}%`;
             el.style.height = `${wall.h}%`;
-            
             el.addEventListener('mouseenter', () => this.handleCollision(el));
             this.mazeRenderer.appendChild(el);
         });
 
-        // Render Start Zone
         const start = document.createElement('div');
         start.className = 'zone start-zone';
         start.textContent = 'Start';
@@ -179,7 +127,6 @@ class Game {
         start.addEventListener('mouseenter', () => this.beginMovement());
         this.mazeRenderer.appendChild(start);
 
-        // Render End Zone
         const end = document.createElement('div');
         end.className = 'zone end-zone';
         end.textContent = 'End';
@@ -216,7 +163,9 @@ class Game {
         }
         
         this.isPlaying = false;
-        this.showOverlay('CRASHED!', 'Try again. Stay within the path.', 'RETRY');
+        setTimeout(() => {
+            this.showOverlay('CRASHED!', 'Stay within the neon path.');
+        }, 500);
     }
 
     completeLevel() {
@@ -227,10 +176,10 @@ class Game {
         
         if (this.currentLevelIndex < LEVELS.length - 1) {
             this.currentLevelIndex++;
-            this.showOverlay('LEVEL CLEAR!', `Time: ${this.timer.toFixed(1)}s`, 'NEXT LEVEL');
+            this.showOverlay('LEVEL CLEAR!', `Time: ${this.timer.toFixed(1)}s`);
             this.renderLevel();
         } else {
-            this.showOverlay('VICTORY!', `You escaped the Neon Maze with ${this.deaths} deaths!`, 'PLAY AGAIN');
+            this.showOverlay('VICTORY!', `Total Deaths: ${this.deaths}`);
             this.currentLevelIndex = 0;
             this.deaths = 0;
             this.deathsDisplay.textContent = '0';
@@ -257,5 +206,4 @@ class Game {
     }
 }
 
-// Start Game
 new Game();
