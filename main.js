@@ -210,6 +210,4 @@ class Game {
 }
 
 // Start Game
-window.addEventListener('DOMContentLoaded', () => {
-    new Game();
-});
+new Game();

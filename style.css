@@ -94,6 +94,7 @@
 
     #game-container {
         position: relative;
+        min-height: 400px;
         background: oklch(100% 0 0 / 0.03);
         border: 1px solid oklch(100% 0 0 / 0.05);
         border-radius: 1rem;
