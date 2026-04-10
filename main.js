@@ -1,5 +1,5 @@
 /**
- * NEON MAZE: INVERSION - Definitive Edition
+ * NEON MAZE: INVERSION - Final Polish
  */
 
 const LEVELS = [
@@ -38,18 +38,6 @@ const LEVELS = [
         ],
         start: { x: 7, y: 45, w: 10, h: 10 },
         end: { x: 85, y: 45, w: 10, h: 10 }
-    },
-    {
-        id: 4, name: "STAGE 03: THE ZIG-ZAG",
-        walls: [
-            { x: 0, y: 0, w: 100, h: 5 }, { x: 0, y: 95, w: 100, h: 5 },
-            { x: 5, y: 25, w: 80, h: 5 }, { x: 15, y: 45, w: 80, h: 5 },
-            { x: 5, y: 65, w: 80, h: 5 },
-            { x: 85, y: 5, w: 5, h: 25 }, { x: 5, y: 30, w: 5, h: 20 },
-            { x: 90, y: 50, w: 5, h: 20 }, { x: 0, y: 70, w: 5, h: 25 }
-        ],
-        start: { x: 10, y: 10, w: 10, h: 10 },
-        end: { x: 10, y: 80, w: 10, h: 10 }
     }
 ];
 
@@ -58,19 +46,17 @@ class Game {
         this.currentLevelIndex = 0;
         this.deaths = 0;
         this.timer = 0;
-        this.totalGameTime = 0; // Total time for non-tutorial levels
+        this.totalGameTime = 0;
         this.timerInterval = null;
         this.isPlaying = false;
         this.hasStartedLevel = false;
         this.isMouseInStart = false;
         this.inversionOffset = 0;
 
-        // Settings
         this.currentTheme = localStorage.getItem('theme') || 'cyan';
         this.currentCursor = localStorage.getItem('cursor') || 'dot';
         this.musicVolume = parseFloat(localStorage.getItem('volume') || '0.5');
 
-        // DOM
         this.mazeRenderer = document.getElementById('maze-renderer');
         this.overlay = document.getElementById('overlay');
         this.overlayView = document.getElementById('overlay-view');
@@ -92,7 +78,6 @@ class Game {
 
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && !this.overlay.classList.contains('hidden')) {
-                // If in victory view, don't start level with space yet
                 if (!document.getElementById('name-input')) this.startLevel();
             }
         });
@@ -101,20 +86,30 @@ class Game {
 
         const container = document.getElementById('game-container');
         container.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+        container.addEventListener('mouseleave', () => {
+            if (this.isPlaying && this.hasStartedLevel) {
+                this.handleCrash(null);
+            }
+        });
 
         this.renderLevel();
         this.showIntro();
     }
 
     initAudio() {
-        this.bgMusic = new Audio('https://assets.mixkit.co/music/preview/mixkit-tech-house-vibes-130.mp3');
+        // Using a reliable synthwave track from a public source
+        this.bgMusic = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
         this.bgMusic.loop = true;
         this.bgMusic.volume = this.musicVolume;
         
-        // Browsers require user interaction to play audio
-        document.addEventListener('click', () => {
-            if (this.bgMusic.paused) this.bgMusic.play();
-        }, { once: true });
+        const startAudio = () => {
+            this.bgMusic.play().catch(e => console.log("Audio play blocked by browser."));
+            document.removeEventListener('click', startAudio);
+            document.removeEventListener('keydown', startAudio);
+        };
+
+        document.addEventListener('click', startAudio);
+        document.addEventListener('keydown', startAudio);
     }
 
     applyTheme(theme) {
@@ -133,6 +128,11 @@ class Game {
         const rect = document.getElementById('game-container').getBoundingClientRect();
         const nativeX = e.clientX - rect.left;
         const nativeY = e.clientY - rect.top;
+
+        // Boundary check
+        if (nativeX < 0 || nativeX > rect.width || nativeY < 0 || nativeY > rect.height) {
+            return;
+        }
 
         let finalX = nativeX;
         let finalY = nativeY;
@@ -174,7 +174,7 @@ class Game {
                 <span class="logo-main">NEON MAZE</span>
                 <span class="logo-sub">INVERSION</span>
             </div>
-            <p>Neural sync orientation required.</p>
+            <p>A test of neural synchronization.</p>
             <div class="controls-hint">
                 <div class="key">SPACE</div>
                 <span>TO BEGIN SIMULATION</span>
@@ -219,7 +219,6 @@ class Game {
             </div>
         `;
 
-        // Refresh active buttons on click
         this.overlayView.querySelectorAll('.choice-btn').forEach(btn => {
             btn.addEventListener('click', () => this.showSettings());
         });
@@ -296,7 +295,7 @@ class Game {
         this.deathsDisplay.textContent = this.deaths;
         this.stopTimer();
         this.isPlaying = false;
-        wallEl.classList.add('hit');
+        if (wallEl) wallEl.classList.add('hit');
         setTimeout(() => this.showStatus('SYNC LOST', 'Connection severed. Re-calibrating.'), 500);
     }
 
@@ -305,7 +304,6 @@ class Game {
         this.isPlaying = false;
         
         if (this.currentLevelIndex < LEVELS.length - 1) {
-            // Track total time for competitive levels (ID > 1)
             if (LEVELS[this.currentLevelIndex].id > 1) {
                 this.totalGameTime += this.timer;
             }
@@ -395,4 +393,4 @@ class Game {
 }
 
 const game = new Game();
-window.game = game; // Expose for HTML onclicks
+window.game = game;
