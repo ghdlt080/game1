@@ -61,6 +61,7 @@ class Game {
         this.timerInterval = null;
         this.isPlaying = false;
         this.hasStartedLevel = false;
+        this.isMouseInStart = false;
 
         this.mazeRenderer = document.getElementById('maze-renderer');
         this.overlay = document.getElementById('overlay');
@@ -76,7 +77,11 @@ class Game {
     init() {
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && !this.overlay.classList.contains('hidden')) {
-                this.startLevel();
+                if (this.isMouseInStart) {
+                    this.startLevel();
+                } else {
+                    this.showWarning("⚠️ PLACE CURSOR ON START ZONE");
+                }
             }
         });
 
@@ -92,8 +97,25 @@ class Game {
     showOverlay(title, message) {
         this.overlayTitle.textContent = title;
         this.overlayMessage.textContent = message;
+        
+        // Remove old warnings
+        const oldWarning = this.overlay.querySelector('.warning');
+        if (oldWarning) oldWarning.remove();
+        
         this.overlay.classList.remove('hidden');
         this.isPlaying = false;
+    }
+
+    showWarning(text) {
+        const oldWarning = this.overlay.querySelector('.warning');
+        if (oldWarning) oldWarning.remove();
+
+        const warning = document.createElement('p');
+        warning.className = 'warning';
+        warning.textContent = text;
+        this.overlay.querySelector('.overlay-content').appendChild(warning);
+        
+        setTimeout(() => warning.remove(), 2000);
     }
 
     hideOverlay() {
@@ -124,7 +146,15 @@ class Game {
         start.style.top = `${level.start.y}%`;
         start.style.width = `${level.start.w}%`;
         start.style.height = `${level.start.h}%`;
-        start.addEventListener('mouseenter', () => this.beginMovement());
+        
+        start.addEventListener('mouseenter', () => {
+            this.isMouseInStart = true;
+            this.beginMovement();
+        });
+        start.addEventListener('mouseleave', () => {
+            this.isMouseInStart = false;
+        });
+        
         this.mazeRenderer.appendChild(start);
 
         const end = document.createElement('div');
