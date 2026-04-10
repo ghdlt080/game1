@@ -1,14 +1,42 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
-  <link href='/style.css' rel='stylesheet'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Maze Escape</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
-  <script defer type="text/javascript" src="/main.js"></script>
+    <div id="app">
+        <header class="game-header">
+            <h1>NEON MAZE</h1>
+            <div class="stats">
+                <div class="stat-item">LEVEL <span id="current-level">1</span></div>
+                <div class="stat-item">TIME <span id="timer">0.0</span>s</div>
+                <div class="stat-item">DEATHS <span id="deaths">0</span></div>
+            </div>
+        </header>
+
+        <main id="game-container">
+            <!-- Maze will be injected here -->
+            <div id="maze-renderer"></div>
+            
+            <div id="overlay" class="overlay hidden">
+                <div class="overlay-content">
+                    <h2 id="overlay-title">READY?</h2>
+                    <p id="overlay-message">Move cursor to START to begin.</p>
+                    <button id="start-btn" class="btn">START GAME</button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="game-footer">
+            <p>Avoid the walls. Reach the portal.</p>
+        </footer>
+    </div>
+    <script type="module" src="main.js"></script>
 </body>
 </html>
