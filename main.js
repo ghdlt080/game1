@@ -79,10 +79,25 @@ class Game {
 
     init() {
         console.log("Game initialized");
-        this.startBtn.addEventListener('click', () => {
-            console.log("Start button clicked");
+        this.startBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent trigger from global click
             this.startLevel();
         });
+        
+        // GLOBAL INPUT LISTENERS
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && !this.overlay.classList.contains('hidden')) {
+                this.startLevel();
+            }
+        });
+        
+        // Document click should also advance if overlay is visible
+        this.overlay.addEventListener('click', () => {
+            if (!this.overlay.classList.contains('hidden')) {
+                this.startLevel();
+            }
+        });
+
         this.mazeRenderer.addEventListener('mouseleave', () => {
             if (this.isPlaying && this.hasStartedLevel) {
                 console.log("Mouse left game area");
@@ -90,37 +105,47 @@ class Game {
             }
         });
         this.renderLevel();
-        this.showOverlay('NEON MAZE', 'Navigate from START to END without touching walls.');
+        this.showOverlay('NEON MAZE', 'Avoid the walls. Reach the portal.\n(Press SPACE or Click to start)');
     }
 
     showOverlay(title, message, btnText = 'START') {
-        console.log("Showing overlay:", title);
         this.overlayTitle.textContent = title;
         this.overlayMessage.textContent = message;
         this.startBtn.textContent = btnText;
+        
+        const content = document.querySelector('.overlay-content');
+        
+        // Standard full-screen layout
+        content.style.position = 'relative';
+        content.style.left = 'auto';
+        content.style.top = 'auto';
+        content.style.transform = 'none';
+        
+        // Show overlay
         this.overlay.classList.remove('hidden');
         this.isPlaying = false;
         
-        // Positioning logic for "START" to align button with Start Zone
+        // After showing content, position the start button specifically for alignment
+        // This makes the transition feel more deliberate.
         if (btnText === 'START' || btnText === 'RETRY' || btnText === 'NEXT LEVEL') {
             const level = LEVELS[this.currentLevelIndex];
-            const content = document.querySelector('.overlay-content');
-            // Align content box so Start Button is over Start Zone
-            content.style.position = 'absolute';
-            content.style.left = `${level.start.x + level.start.w/2}%`;
-            content.style.top = `${level.start.y + level.start.h/2}%`;
-            content.style.transform = 'translate(-50%, -50%)';
+            this.startBtn.classList.add('aligned');
+            this.startBtn.style.left = `${level.start.x + level.start.w/2}%`;
+            this.startBtn.style.top = `${level.start.y + level.start.h/2}%`;
+            this.startBtn.style.transform = 'translate(-50%, -50%)';
+            // Move button into maze container for percentage alignment
+            this.mazeRenderer.appendChild(this.startBtn);
         } else {
-            const content = document.querySelector('.overlay-content');
-            content.style.position = 'relative';
-            content.style.left = 'auto';
-            content.style.top = 'auto';
-            content.style.transform = 'none';
+            this.startBtn.classList.remove('aligned');
+            this.startBtn.style.position = 'relative';
+            this.startBtn.style.left = 'auto';
+            this.startBtn.style.top = 'auto';
+            this.startBtn.style.transform = 'none';
+            content.appendChild(this.startBtn);
         }
     }
 
     hideOverlay() {
-        console.log("Hiding overlay");
         this.overlay.classList.add('hidden');
         this.isPlaying = true;
     }
