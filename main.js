@@ -6,54 +6,62 @@
 const LEVELS = [
     {
         id: 1,
-        name: "STAGE 01: ORIENTATION",
+        name: "STAGE 01: THE WINDER",
         isTutorial: true,
         walls: [
-            { x: 0, y: 0, w: 100, h: 10 }, { x: 0, y: 90, w: 100, h: 10 },
-            { x: 0, y: 10, w: 5, h: 80 }, { x: 95, y: 10, w: 5, h: 80 },
-            { x: 20, y: 10, w: 5, h: 35 }, { x: 20, y: 55, w: 5, h: 35 },
-            { x: 40, y: 10, w: 5, h: 35 }, { x: 40, y: 55, w: 5, h: 35 },
-            { x: 60, y: 10, w: 5, h: 35 }, { x: 60, y: 55, w: 5, h: 35 },
+            { x: 0, y: 0, w: 100, h: 20 }, { x: 0, y: 80, w: 100, h: 20 },
+            { x: 20, y: 20, w: 5, h: 40 }, { x: 40, y: 40, w: 5, h: 40 },
+            { x: 60, y: 20, w: 5, h: 40 }, { x: 80, y: 40, w: 5, h: 40 },
         ],
-        start: { x: 7, y: 45, w: 10, h: 10 },
-        end: { x: 80, y: 45, w: 12, h: 12 },
+        start: { x: 5, y: 45, w: 10, h: 10 },
+        end: { x: 85, y: 45, w: 10, h: 10 },
         instructions: {
-            initial: "MOVE TO THE [GREEN START ZONE]",
-            started: "⚠️ VERTICAL INVERSION ACTIVE! REACH THE [PURPLE END PORTAL]"
+            initial: "FOLLOW THE NEON PATH",
+            started: "⚠️ NEURAL FLIP ACTIVE! STAY CENTERED"
         }
     },
     {
         id: 2,
-        name: "STAGE 02: THE WEAVE",
+        name: "STAGE 02: THE GAUNTLET",
         walls: [
             { x: 0, y: 0, w: 100, h: 5 }, { x: 0, y: 95, w: 100, h: 5 },
             { x: 0, y: 5, w: 5, h: 90 }, { x: 95, y: 5, w: 5, h: 90 },
-            // Vertical Pillars
-            { x: 25, y: 5, w: 5, h: 40 }, { x: 25, y: 55, w: 5, h: 40 },
-            { x: 45, y: 5, w: 5, h: 40 }, { x: 45, y: 55, w: 5, h: 40 },
-            { x: 65, y: 5, w: 5, h: 40 }, { x: 65, y: 55, w: 5, h: 40 },
-            { x: 85, y: 5, w: 5, h: 40 }, { x: 85, y: 55, w: 5, h: 40 },
+            // Scattered "Mines"
+            { x: 20, y: 20, w: 5, h: 5 }, { x: 25, y: 50, w: 5, h: 5 }, { x: 30, y: 80, w: 5, h: 5 },
+            { x: 40, y: 35, w: 5, h: 5 }, { x: 45, y: 15, w: 5, h: 5 }, { x: 50, y: 65, w: 5, h: 5 },
+            { x: 60, y: 45, w: 5, h: 5 }, { x: 65, y: 25, w: 5, h: 5 }, { x: 70, y: 75, w: 5, h: 5 },
+            { x: 80, y: 10, w: 5, h: 5 }, { x: 85, y: 40, w: 5, h: 5 },
         ],
-        start: { x: 10, y: 45, w: 8, h: 10 },
-        end: { x: 75, y: 45, w: 8, h: 10 }
+        start: { x: 5, y: 45, w: 10, h: 10 },
+        end: { x: 85, y: 85, w: 10, h: 10 }
     },
     {
         id: 3,
-        name: "STAGE 03: THE MATRIX",
+        name: "STAGE 03: THE HOURGLASS",
         walls: [
             { x: 0, y: 0, w: 100, h: 5 }, { x: 0, y: 95, w: 100, h: 5 },
             { x: 0, y: 5, w: 5, h: 90 }, { x: 95, y: 5, w: 5, h: 90 },
-            // Dense horizontal blocks with center opening
-            { x: 20, y: 5, w: 10, h: 40 }, { x: 20, y: 55, w: 10, h: 40 },
-            { x: 40, y: 5, w: 10, h: 30 }, { x: 40, y: 65, w: 10, h: 30 },
-            { x: 60, y: 5, w: 10, h: 40 }, { x: 60, y: 55, w: 10, h: 40 },
-            { x: 80, y: 5, w: 10, h: 30 }, { x: 80, y: 65, w: 10, h: 30 },
-            // Thin horizontal strips
-            { x: 30, y: 40, w: 10, h: 2 }, { x: 50, y: 58, w: 10, h: 2 },
-            { x: 70, y: 40, w: 10, h: 2 },
+            // Large funnel blocks
+            { x: 15, y: 5, w: 30, h: 35 }, { x: 15, y: 60, w: 30, h: 35 },
+            { x: 55, y: 5, w: 30, h: 35 }, { x: 55, y: 60, w: 30, h: 35 },
+            // Narrow center gate
+            { x: 45, y: 5, w: 10, h: 42 }, { x: 45, y: 53, w: 10, h: 42 },
         ],
-        start: { x: 7, y: 46, w: 8, h: 8 },
-        end: { x: 90, y: 46, w: 5, h: 8 }
+        start: { x: 7, y: 45, w: 10, h: 10 },
+        end: { x: 85, y: 45, w: 10, h: 10 }
+    },
+    {
+        id: 4,
+        name: "STAGE 04: THE ZIG-ZAG",
+        walls: [
+            { x: 0, y: 0, w: 100, h: 5 }, { x: 0, y: 95, w: 100, h: 5 },
+            { x: 5, y: 25, w: 80, h: 5 }, { x: 15, y: 45, w: 80, h: 5 },
+            { x: 5, y: 65, w: 80, h: 5 },
+            { x: 85, y: 5, w: 5, h: 25 }, { x: 5, y: 30, w: 5, h: 20 },
+            { x: 90, y: 50, w: 5, h: 20 }, { x: 0, y: 70, w: 5, h: 25 }
+        ],
+        start: { x: 10, y: 10, w: 10, h: 10 },
+        end: { x: 10, y: 80, w: 10, h: 10 }
     }
 ];
 
