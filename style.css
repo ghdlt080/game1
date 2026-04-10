@@ -200,6 +200,32 @@
         box-shadow: 0 20px 50px oklch(0% 0 0 / 0.5);
     }
 
+    .game-warning {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: oklch(60% 0.2 30 / 0.8);
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border-radius: 2rem;
+        font-weight: 700;
+        font-size: 0.9rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 30px oklch(0% 0 0 / 0.5);
+        z-index: 5;
+        pointer-events: none;
+        transition: opacity 0.3s, transform 0.3s;
+    }
+
+    .game-warning.hidden {
+        opacity: 0;
+        transform: translate(-50%, 20px);
+        pointer-events: none;
+    }
+
     .warning {
         color: var(--danger-color);
         font-weight: 700;

@@ -70,6 +70,7 @@ class Game {
         this.levelDisplay = document.getElementById('current-level');
         this.timerDisplay = document.getElementById('timer');
         this.deathsDisplay = document.getElementById('deaths');
+        this.gameWarning = document.getElementById('game-warning');
 
         this.init();
     }
@@ -77,11 +78,7 @@ class Game {
     init() {
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && !this.overlay.classList.contains('hidden')) {
-                if (this.isMouseInStart) {
-                    this.startLevel();
-                } else {
-                    this.showWarning("⚠️ PLACE CURSOR ON START ZONE");
-                }
+                this.startLevel();
             }
         });
 
@@ -97,25 +94,9 @@ class Game {
     showOverlay(title, message) {
         this.overlayTitle.textContent = title;
         this.overlayMessage.textContent = message;
-        
-        // Remove old warnings
-        const oldWarning = this.overlay.querySelector('.warning');
-        if (oldWarning) oldWarning.remove();
-        
+        this.gameWarning.classList.add('hidden'); // Ensure no stray warnings
         this.overlay.classList.remove('hidden');
         this.isPlaying = false;
-    }
-
-    showWarning(text) {
-        const oldWarning = this.overlay.querySelector('.warning');
-        if (oldWarning) oldWarning.remove();
-
-        const warning = document.createElement('p');
-        warning.className = 'warning';
-        warning.textContent = text;
-        this.overlay.querySelector('.overlay-content').appendChild(warning);
-        
-        setTimeout(() => warning.remove(), 2000);
     }
 
     hideOverlay() {
@@ -172,11 +153,17 @@ class Game {
         this.hideOverlay();
         this.hasStartedLevel = false;
         this.resetTimer();
+        
+        // After Space, if they aren't on start, show bottom warning
+        if (!this.isMouseInStart) {
+            this.gameWarning.classList.remove('hidden');
+        }
     }
 
     beginMovement() {
         if (!this.isPlaying || this.hasStartedLevel) return;
         this.hasStartedLevel = true;
+        this.gameWarning.classList.add('hidden'); // Hide warning once started
         this.startTimer();
     }
 
@@ -186,6 +173,7 @@ class Game {
         this.deaths++;
         this.deathsDisplay.textContent = this.deaths;
         this.stopTimer();
+        this.gameWarning.classList.add('hidden');
         
         if (wallEl && wallEl.classList) {
             wallEl.classList.add('hit');
@@ -203,6 +191,7 @@ class Game {
         
         this.stopTimer();
         this.isPlaying = false;
+        this.gameWarning.classList.add('hidden');
         
         if (this.currentLevelIndex < LEVELS.length - 1) {
             this.currentLevelIndex++;
