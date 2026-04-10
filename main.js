@@ -100,6 +100,23 @@ class Game {
         this.startBtn.textContent = btnText;
         this.overlay.classList.remove('hidden');
         this.isPlaying = false;
+        
+        // Positioning logic for "START" to align button with Start Zone
+        if (btnText === 'START' || btnText === 'RETRY' || btnText === 'NEXT LEVEL') {
+            const level = LEVELS[this.currentLevelIndex];
+            const content = document.querySelector('.overlay-content');
+            // Align content box so Start Button is over Start Zone
+            content.style.position = 'absolute';
+            content.style.left = `${level.start.x + level.start.w/2}%`;
+            content.style.top = `${level.start.y + level.start.h/2}%`;
+            content.style.transform = 'translate(-50%, -50%)';
+        } else {
+            const content = document.querySelector('.overlay-content');
+            content.style.position = 'relative';
+            content.style.left = 'auto';
+            content.style.top = 'auto';
+            content.style.transform = 'none';
+        }
     }
 
     hideOverlay() {
