@@ -78,11 +78,17 @@ class Game {
 
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && !this.overlay.classList.contains('hidden')) {
-                if (!document.getElementById('name-input')) this.startLevel();
+                if (!document.getElementById('name-input')) {
+                    e.preventDefault();
+                    this.startLevel();
+                }
             }
         });
 
-        this.settingsBtn.addEventListener('click', () => this.showSettings());
+        this.settingsBtn.addEventListener('click', () => {
+            this.settingsBtn.blur();
+            this.showSettings();
+        });
 
         const container = document.getElementById('game-container');
         container.addEventListener('mousemove', (e) => this.handleMouseMove(e));
@@ -324,16 +330,24 @@ class Game {
             <h2 style="font-size: 3rem; color: var(--accent-color);">LEGENDARY</h2>
             <p>Total Sync Time: ${this.totalGameTime.toFixed(1)}s</p>
             <input type="text" id="name-input" class="name-input" placeholder="ENTER YOUR NAME" maxlength="15">
-            <button class="choice-btn active" style="font-size: 1.5rem; width: 100%;" onclick="game.saveScore()">SUBMIT RECORD</button>
+            <button id="submit-score-btn" class="choice-btn active" style="font-size: 1.5rem; width: 100%;">SUBMIT RECORD</button>
         `;
         
-        document.getElementById('name-input').focus();
+        const input = document.getElementById('name-input');
+        const submitBtn = document.getElementById('submit-score-btn');
+        
+        input.focus();
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') this.saveScore();
+        });
+        submitBtn.addEventListener('click', () => this.saveScore());
     }
 
     saveScore() {
-        const name = document.getElementById('name-input').value || 'ANONYMOUS';
+        const input = document.getElementById('name-input');
+        const name = input ? input.value || 'ANONYMOUS' : 'ANONYMOUS';
         const scores = JSON.parse(localStorage.getItem('leaderboard') || '[]');
-        scores.push({ name, time: this.totalGameTime.toFixed(1) });
+        scores.push({ name, time: parseFloat(this.totalGameTime.toFixed(1)) });
         scores.sort((a, b) => a.time - b.time);
         localStorage.setItem('leaderboard', JSON.stringify(scores.slice(0, 10)));
         this.showLeaderboard();
